@@ -1,4 +1,4 @@
-package com.example.onboarding_presentation.age
+package com.example.onboarding_presentation.weight
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.preferences.Preferences
-import com.example.core.domain.use_case.FilterOutDigits
 import com.example.core.util.UiEvent
 import com.example.core.util.UiText
 import com.example.core.R
@@ -19,36 +18,35 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AgeViewModel @Inject constructor(
-    private val preferences: Preferences,
-    private val filterOutDigits: FilterOutDigits
+class WeightViewModel @Inject constructor(
+    private val preferences: Preferences
 ) : ViewModel(){
 
-    var age by mutableStateOf("20")
+    var weight by mutableStateOf("80.0")
         private  set
 
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    fun onAgeEnter(age: String){
-        if(age.length <= 3){
-            this.age = filterOutDigits(age)
-            Log.e("AgeViewModel", "onAgeEnter: ${this.age}", )
+    fun onWeightEnter(weight: String){
+        if(weight.length <= 5){
+            this.weight = weight
+            Log.e("WeightViewModel", "pnWeightEnter: ${this.weight}", )
 
         }
     }
 
     fun onNextClick(){
         viewModelScope.launch {
-            val ageNumber = age.toIntOrNull() ?: kotlin.run {
+            val weightNumber = weight.toFloatOrNull() ?: kotlin.run {
                 _uiEvent.send(
-                    UiEvent.ShowSnackbar(UiText.StringResource(R.string.error_age_cant_be_empty)
+                    UiEvent.ShowSnackbar(UiText.StringResource(R.string.error_height_cant_be_empty)
                     )
                 )
                 return@launch
             }
-            preferences.saveAge(ageNumber)
-            _uiEvent.send(UiEvent.Navigate(Route.WEIGHT))
+            preferences.saveWeight(weightNumber)
+            _uiEvent.send(UiEvent.Navigate(Route.ACTIVITY))
         }
     }
 }
