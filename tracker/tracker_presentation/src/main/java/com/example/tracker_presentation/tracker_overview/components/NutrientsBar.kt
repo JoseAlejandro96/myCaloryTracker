@@ -14,7 +14,7 @@ import com.example.core_ui.FatColor
 import com.example.core_ui.ProteinColor
 
 @Composable
-fun nutrientBar(
+fun NutrientBar(
     carbs: Int,
     protein: Int,
     fat: Int,
